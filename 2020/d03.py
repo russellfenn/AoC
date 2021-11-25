@@ -60,14 +60,14 @@ def traverse_grid(grid: List):
 
 def traverse_grid_2(grid: List[str], x: int, y:int) -> List[str]:
     result: List[str] = list()
-    for i in range(len(grid)):
+    for i in range(len(grid)//y):
         print(f"{x*i} {y * i} {grid[y * i][x * i]}")
         result.append(grid[y * i][x * i])
     return result
 
 
 def traverse_grid_3(grid: List[str], x: int, y:int) -> List[str]:
-    return [grid[y * i][x * i] for i in range(len(grid))]
+    return [grid[y * i][x * i] for i in range(len(grid)//y)]
 
 
 def traverse_narrow_grid(grid: List[str], x: int, y: int) -> List[str]:
@@ -75,6 +75,7 @@ def traverse_narrow_grid(grid: List[str], x: int, y: int) -> List[str]:
        we just need to mod by the width of the grid to stay within the bounds.
     """
     width = len(grid[0])  # assume all rows are the same width
+    # divide number of iterations by the y step!
     return [grid[y * i][(x * i) % width] for i in range(len(grid)//y)]
 
 
