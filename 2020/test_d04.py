@@ -1,7 +1,8 @@
 import d04
+from d04_pydantic import Passport
 import pytest
+from pydantic import ValidationError
 from typing import Dict, List
-
 mixed_sample_data = """ecl:gry pid:860033327 eyr:2020 hcl:#fffffd
 byr:1937 iyr:2017 cid:147 hgt:183cm
 
@@ -17,9 +18,11 @@ hcl:#cfa07d eyr:2025 pid:166559648
 iyr:2011 ecl:brn hgt:59in
 """
 
+
 @pytest.fixture
 def sample_data():
     return mixed_sample_data.split('\n')
+
 
 invalid_passport_data = """eyr:1972 cid:100
 hcl:#18171d ecl:amb hgt:170 pid:186cm iyr:2018 byr:1926
@@ -34,6 +37,7 @@ ecl:brn hgt:182cm pid:021572410 eyr:2020 byr:1992 cid:277
 hgt:59cm ecl:zzz
 eyr:2038 hcl:74454a iyr:2023
 pid:3556412378 byr:2007"""
+
 
 @pytest.fixture
 def invalid_passports():
@@ -52,6 +56,7 @@ pid:545766238 ecl:hzl
 eyr:2022
 
 iyr:2010 hgt:158cm hcl:#b6652a ecl:blu byr:1944 eyr:2021 pid:093154719"""
+
 
 @pytest.fixture
 def valid_passports():
@@ -97,3 +102,20 @@ def test_invalid_passport_list(invalid_passports):
     valid_fields_d = [d04.check_values(p) for p in passports]
     all_valid_fields = [all(vf.values()) for vf in valid_fields_d]
     assert any(all_valid_fields) == False
+
+
+def test_valid_passport_list_pydantic(valid_passports):
+    passports: List[Dict[str, str]] = d04.parse_data(valid_passports)
+    valid_list: List[Passport] = list()
+    for suspect_passport in passports:
+        valid_list.append(Passport(**suspect_passport))
+    assert len(passports) == len(valid_list)
+
+
+def test_invalid_passport_list_pydantic(invalid_passports):
+    passports: List[Dict[str, str]] = d04.parse_data(invalid_passports)
+    valid_list: List[Passport] = list()
+    for suspect_passport in passports:
+        with pytest.raises(ValidationError):
+            valid_list.append(Passport(**suspect_passport))
+    assert len(valid_list) == 0
