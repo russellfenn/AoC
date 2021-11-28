@@ -8,6 +8,7 @@ ipython = "*"
 httpx = "*"
 icecream = "*"
 pytest = "*"
+pydantic = "*"
 
 [dev-packages]
 
