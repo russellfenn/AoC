@@ -44,21 +44,26 @@ from dataclasses import dataclass
 outer_bag_rx = re.compile(r'^(?P<bag_color>[a-z ]+?)\sbags contain ')
 inner_bag_rx = re.compile(r'\s*(?P<quant>[0-9]+)\s(?P<color>[a-z ]+?)\sbags?\.?')
 
-def parse_rule(rule: str) -> Tuple[str, List[Tuple[int, str]]]:
+# Type Alias
+Rule = List[Tuple[int, str]]
+
+
+def parse_rule(rule_str: str) -> Tuple[str, Rule]:
     """ Returns (bag_color, [(quant, bag_color), (quant, bag_color)])
     """
-    res = outer_bag_rx.match(rule)
+    res = outer_bag_rx.match(rule_str)
     if res:
         outer_bag_color: str = res.group(1)
         contents: List[Tuple[int, str]] = list()
-        for _ in rule[res.end():].split(','):
+        for _ in rule_str[res.end():].split(','):
             res2 = inner_bag_rx.match(_)
             if res2:
                 contents.append((int(res2.group(1)), res2.group(2)))
         return (outer_bag_color, contents)
+    raise ValueError('Invalid rule string.')
 
 
-def find_inner_bag(rules: Dict[str, Tuple], target_color: str) -> Set[str]:
+def find_inner_bag(rules: Dict[str, Rule], target_color: str) -> Set[str]:
     """Return a List of bag colors that may contain the target color"""
     result: Set[str] = set()
     for color, contents in rules.items():
@@ -67,11 +72,11 @@ def find_inner_bag(rules: Dict[str, Tuple], target_color: str) -> Set[str]:
     return result
 
 
-def find_inner_bag_2(rules: Dict[str, Tuple], target_color: str) -> Set[str]:
+def find_inner_bag_2(rules: Dict[str, Rule], target_color: str) -> Set[str]:
     return set([color for color, contents in rules.items() if target_color in [inner_color for quant, inner_color in contents]])
 
 
-def deep_find(rules: Dict[str, Tuple], target_color: str) -> Set[str]:
+def deep_find(rules: Dict[str, Rule], target_color: str) -> Set[str]:
     results: Set[str] = set()
 
     new_bags: Set[str] = find_inner_bag_2(rules, target_color)
@@ -97,7 +102,7 @@ class Node:
     contents: List[BagContent]
 
 
-def create_bag_tree(rules: Dict[str, List[Tuple[int, str]]]) -> Dict[str, Node]:
+def create_bag_tree(rules: Dict[str, Rule]) -> Dict[str, Node]:
     """Load all the bags into a tree structure with quantities."""
     all_bags: Dict[str, Node] = dict()
     # Pass 1 just make the nodes
@@ -120,7 +125,7 @@ def count_contents(node: Node) -> int:
 
 if __name__ == "__main__":
     with open('d07.input', 'r') as f:
-        rules: Dict[str, List[Tuple[int, str]]]
+        rules: Dict[str, Rule]
         rules = {color: contents for color, contents in [parse_rule(r) for r in f.readlines()]}
     
     print(f"Parsed {len(rules)} rules.")
