@@ -82,6 +82,10 @@ def deep_find(rules: Dict[str, Tuple], target_color: str) -> Set[str]:
     return results
 
 
+# Warning! Python hack
+# The first time BagContent is defined, the `color` field is None.
+# This allows us to avoid referencing the Node class before it is defined.
+# The second time BagContent is defined, Node does exist.
 @dataclass
 class BagContent:
     quant: int
