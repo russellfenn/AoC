@@ -38,7 +38,7 @@ We build a tree, starting with our target bag (shiny gold)
 """
 
 import re
-from typing import Dict, List, Optional, Set, Tuple
+from typing import Dict, List, Optional, Set, Tuple, NewType
 from dataclasses import dataclass
 
 outer_bag_rx = re.compile(r'^(?P<bag_color>[a-z ]+?)\sbags contain ')
@@ -83,23 +83,18 @@ def deep_find(rules: Dict[str, Tuple], target_color: str) -> Set[str]:
 
 
 # Warning! Python hack
-# The first time BagContent is defined, the `color` field is None.
-# This allows us to avoid referencing the Node class before it is defined.
-# The second time BagContent is defined, Node does exist.
-@dataclass
-class BagContent:
-    quant: int
-    color: None
-
-@dataclass
-class Node:
-    color: str
-    contents: List[BagContent]
+# Delay defining the Node type to avoid a circular reference
+Node = NewType('Node', 'Node')
 
 @dataclass
 class BagContent:
     quant: int
     color: Node
+
+@dataclass
+class Node:
+    color: str
+    contents: List[BagContent]
 
 
 def create_bag_tree(rules: Dict[str, List[Tuple[int, str]]]) -> Dict[str, Node]:
