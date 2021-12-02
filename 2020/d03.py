@@ -40,7 +40,7 @@ from collections import Counter
 
 def load_grid(grid_string: str) -> List[str]:
     """Uses newlines to break the grid string into rows"""
-    return grid_string.split('\n')
+    return grid_string.splitlines()
 
 
 def expand_grid(grid: List[str], count: int) -> List[str]:

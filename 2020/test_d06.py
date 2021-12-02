@@ -18,8 +18,8 @@ a
 b"""
 
 
-def test_example_groups_anyone():
-    groups: List[Set[str]] = parse_input_anyone(example_data.split('\n'))
+def test_part1_anyone():
+    groups: List[Set[str]] = parse_input_anyone(example_data.splitlines())
     assert len(groups) == 5
 
     set_sizes: List[int] = [len(g) for g in groups]
@@ -28,8 +28,8 @@ def test_example_groups_anyone():
     assert sum(set_sizes) == 11
 
 
-def test_example_groups_everyone():
-    groups: List[Set[str]] = parse_input_everyone(example_data.split('\n'))
+def test_part2_everyone():
+    groups: List[Set[str]] = parse_input_everyone(example_data.splitlines())
     assert len(groups) == 5
 
     set_sizes: List[int] = [len(g) for g in groups]

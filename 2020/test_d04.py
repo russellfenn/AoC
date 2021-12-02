@@ -21,7 +21,7 @@ iyr:2011 ecl:brn hgt:59in
 
 @pytest.fixture
 def sample_data():
-    return mixed_sample_data.split('\n')
+    return mixed_sample_data.splitlines()
 
 
 invalid_passport_data = """eyr:1972 cid:100
@@ -41,7 +41,7 @@ pid:3556412378 byr:2007"""
 
 @pytest.fixture
 def invalid_passports():
-    return invalid_passport_data.split('\n')
+    return invalid_passport_data.splitlines()
 
 
 valid_passport_data = """pid:087499704 hgt:74in ecl:grn iyr:2012 eyr:2030 byr:1980
@@ -60,7 +60,7 @@ iyr:2010 hgt:158cm hcl:#b6652a ecl:blu byr:1944 eyr:2021 pid:093154719"""
 
 @pytest.fixture
 def valid_passports():
-    return valid_passport_data.split('\n')
+    return valid_passport_data.splitlines()
 
 
 def test_required_fields(sample_data):

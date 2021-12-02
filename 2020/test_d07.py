@@ -35,17 +35,17 @@ def rules_2():
     return {color: contents for color, contents in [parse_rule(r) for r in example_rules_2]}
 
 
-def test_one_level_search(rules_1):
+def test_part1_one_level_search(rules_1):
     result = find_inner_bag_2(rules_1, 'shiny gold')
     assert result == set(['bright white', 'muted yellow'])
 
 
-def test_recursive_search(rules_1):
+def test_part1_recursive_search(rules_1):
     result = deep_find(rules_1, 'shiny gold')
     assert result == {'bright white', 'dark orange', 'light red', 'muted yellow'}
 
 
-def test_bag_counts(rules_1, rules_2):
+def test_part2_bag_counts(rules_1, rules_2):
     tree_1: Dict[str, Node] = create_bag_tree(rules_1)
     assert count_contents(tree_1['faded blue']) == 1
     assert count_contents(tree_1['dotted black']) == 1
