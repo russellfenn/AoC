@@ -24,5 +24,6 @@ def test_part2_sliding_window_increases():
     depths: Depths = [int(i) for i in example_depths_str.splitlines()]
     window_depths: Depths = sum_sliding_window(depths, window_size=3)
     assert window_depths == [607, 618, 618, 617, 647, 716, 769, 792]
+    assert len(depths) - len(window_depths) == 2  # window_size -1
     assert count_increases(window_depths) == 5
     assert solve_part2(depths) == 5
