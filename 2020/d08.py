@@ -10,14 +10,20 @@ Maybe a similar machine will be handy here.
 """
 
 from dataclasses import dataclass
-from os import stat
 from typing import Dict, List, Set
+from copy import deepcopy
+
+
+# Type aliases
+Memory = Dict[str, int]
+Program = List[str]
+History = List[int]
 
 @dataclass
 class StateMachine:
-    memory: Dict[str, int]
-    program: List[str]
-    instruction_history: List[int] = None
+    memory: Memory
+    program: Program
+    instruction_history: History = None
 
     def run(self):
         self.instruction_history = list()
@@ -41,11 +47,7 @@ class StateMachine:
         return 0  # successful program run!
 
 
-if __name__ == "__main__":
-
-    with open('d08.input', 'r') as f:
-        program: List[str] = f.readlines()
-    
+def solve_part1(program: Program) -> int:
     state_machine: StateMachine = StateMachine(
         program=program,
         memory={'accumulator': 0}
@@ -55,5 +57,46 @@ if __name__ == "__main__":
         state_machine.run()
     except Exception as e:
         print(e)
-        print(f"[Part 1] Accumulator value: {state_machine.memory['accumulator']}")
+    return state_machine.memory['accumulator']
+
+
+def solve_part2(program: Program) -> int:
+    """Iterate through the program, changing nop -> jmp and jmp -> nop
+       (working on a copy so we only change one instruction at a time).
+       Running the program will either cause an exception or exit with 0.
+       When we exit with 0, we have corrected the fault.
+    """
+    for i in range(len(program)):
+        patched_program: Program = deepcopy(program)
+        if patched_program[i].startswith('nop'):
+            patched_program[i] = patched_program[i].replace('nop', 'jmp')
+        elif patched_program[i].startswith('jmp'):
+            patched_program[i] = patched_program[i].replace('jmp', 'nop')
+        else:
+            continue
+
+        # try the patched program
+        state_machine: StateMachine
+        state_machine = StateMachine(
+            program=patched_program,
+            memory={'accumulator': 0}
+        )
+        try:
+            # if no exception, then our program worked
+            rc: int = state_machine.run()
+            return state_machine.memory['accumulator']
+        except Exception as e:
+            # didn't work this time, try again
+            # print(f"Attempted Patch at offset {i} failed.")
+            pass
+        del state_machine
+
+
+if __name__ == "__main__":
+
+    with open('d08.input', 'r') as f:
+        program: Program = f.readlines()
     
+    print(f"[Part 1] Accumulator value: {solve_part1(program)}")
+    print(f"[Part 2] Corrected code - Accumulator value: {solve_part2(program)}")
+

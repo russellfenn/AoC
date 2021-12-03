@@ -1,4 +1,4 @@
-from d08 import StateMachine
+from d08 import StateMachine, solve_part2
 import pytest
 from typing import List
 
@@ -35,7 +35,7 @@ nop -4
 acc +6
 """
 
-def test_part2_example():
+def test_part2_hand_fixed_example():
     program: List[str] = fixed_example_program_str.splitlines()
     state_machine: StateMachine = StateMachine(
         program=program,
@@ -44,3 +44,8 @@ def test_part2_example():
     rc: int = state_machine.run()
     assert rc == 0
     assert state_machine.memory['accumulator'] == 8
+
+
+def test_part2_iterative():
+    program: List[str] = example_program_str.splitlines()
+    assert solve_part2(program) == 8
