@@ -10,14 +10,14 @@ Maybe a similar machine will be handy here.
 """
 
 from dataclasses import dataclass
-from typing import Dict, List, Set
+from typing import Dict, List, Optional, Set
 from copy import deepcopy
 
 
 # Type aliases
 Memory = Dict[str, int]
 Program = List[str]
-History = List[int]
+History = Optional[List[int]]
 
 @dataclass
 class StateMachine:
