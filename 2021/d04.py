@@ -17,6 +17,11 @@ of 5 lines, 5 numbers per line. A blank line separates lines.
 
 This all seems straight forward. My only concern at Part 1 is that replacing the drawn numbers with
 None values will make Part 2 more difficult.
+
+Part 2 - My concern about marking the cards by replacing numbers with None values turned out to be ok.
+In fact, starting the game over on previously marked cards was not a problem either, because the order
+of called numbers did not change. It was inefficient because we re-playd the game from the start each time.
+Maybe keeping an index of our position in the number list would have helped.
 """
 
 import collections
@@ -89,16 +94,30 @@ def read_puzzle_input(puzzle: List[str]) -> Tuple[List[int], List[BingoCard]]:
 
 def game(numbers: List[int], cards: List[BingoCard]) -> Tuple[BingoCard, int]:
     for number in numbers:
-        for card in cards:
+        for index, card in enumerate(cards):
             card.mark_number(number)
             if card.is_good_bingo():
-                return card, number
+                return index, card, number
 
 
-def solve_part1(numbers: List[int], cards: List[BingoCard]):
+def solve_part1(numbers: List[int], cards: List[BingoCard]) -> int:
+    """Play until we find the first winning card."""
+    index: int
     winning_card: BingoCard
     last_number: int
-    winning_card, last_number = game(numbers, cards)
+    index, winning_card, last_number = game(numbers, cards)
+    return last_number * winning_card.compute_score()
+
+
+def solve_part2(numbers: List[int], cards: List[BingoCard]) -> int:
+    """This time, keep playing until we find the last winning card."""
+    index: int
+    winning_card: BingoCard
+    last_number: int
+    while len(cards) > 0:
+        index, winning_card, last_number = game(numbers, cards)
+        # Remove that card
+        del cards[index]
     return last_number * winning_card.compute_score()
 
 
@@ -108,4 +127,5 @@ if __name__ == "__main__":
         cards: List[BingoCard]
         numbers, cards = read_puzzle_input([l.rstrip() for l in f.readlines()])
 
-    print(f"[Part 1] Winning score is {solve_part1(numbers, cards)}")
+    print(f"[Part 1] We win score is {solve_part1(numbers, cards)}.")
+    print(f"[Part 2] Squid wins score is {solve_part2(numbers, cards)}.")
