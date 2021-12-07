@@ -58,9 +58,8 @@ class BingoCard(List):
         for row in range(5):
             try:
                 i:int = self[row].index(number)
-                if i >=0:
-                    self[row][i] = None
-                    return True
+                self[row][i] = None
+                return True
             except ValueError as e:
                 pass  #
         return False
