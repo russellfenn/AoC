@@ -1,4 +1,4 @@
-from d05 import LineSegment, Grid, read_puzzle_input
+from d05 import Point, LineSegment, Grid, read_puzzle_input
 from typing import List
 import itertools
 
@@ -63,3 +63,15 @@ def test_part2_grid():
         g.mark_line(line)
     overlap: int = sum((1 for i in itertools.chain.from_iterable(g.list) if i >= 2))
     assert overlap == 12
+
+
+def test_long_line_segment():
+    puzzle: List[LineSegment] = read_puzzle_input(["734,895 -> 29,190"])
+    segment: LineSegment = puzzle[0]
+    assert segment.orientation() == "Diagonal"
+    line_points: List[Point] = segment.enumerate_points()
+    assert line_points[0] == Point(x=734, y=895)
+    assert line_points[1] == Point(x=733, y=894)
+    assert line_points[-1] == Point(x=29, y=190)
+    assert line_points[-2] == Point(x=30, y=191)
+    assert len(line_points) == 706

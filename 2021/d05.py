@@ -66,7 +66,7 @@ class LineSegment(NamedTuple):
             steps = self.end.x - self.start.x
         else:
             delta_x = -1
-            steps = self.start.x - self.start.y
+            steps = self.start.x - self.end.x
         if self.end.y > self.start.y:
             delta_y = 1
         else:
@@ -81,11 +81,19 @@ class LineSegment(NamedTuple):
 class Grid:
 
     def __init__(self, x_size: int, y_size: int):
+        self.x_size: int = x_size
+        self.y_size: int = y_size
         self.list = list()
         for y in range(y_size):
             self.list.append([0 for i in range(x_size)])
 
     def mark_line(self, line: LineSegment):
+        """Increment every grid square along the LineSegment."""
+        if (line.start.x > self.x_size) \
+            or (line.end.x > self.x_size) \
+            or (line.start.y > self.y_size) \
+            or (line.end.y > self.y_size):
+            raise ValueError(f"{line} exceeds grid dimensions ({self.x_size},{self.y_size})")
         point: Point
         for point in line.enumerate_points():
             self.list[point.y][point.x] += 1
