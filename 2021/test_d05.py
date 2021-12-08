@@ -53,3 +53,13 @@ def test_part1_grid():
             g.mark_line(line)
     overlap: int = sum((1 for i in itertools.chain.from_iterable(g.list) if i >= 2))
     assert overlap == 5
+
+
+def test_part2_grid():
+    input_str: List[str] = [l.rstrip() for l in puzzle_input.splitlines()]
+    puzzle: List[LineSegment] = read_puzzle_input(input_str)
+    g: Grid = Grid(10, 10)
+    for line in puzzle:
+        g.mark_line(line)
+    overlap: int = sum((1 for i in itertools.chain.from_iterable(g.list) if i >= 2))
+    assert overlap == 12
