@@ -12,7 +12,7 @@ Well, this works a lot better, and a test on the sample data for 80 days gets th
 But our full 256 day simulation, even for the initial sample of 5 fish grows to 26 billion. I tested with a list that grew
 to 35 _million_, and while it worked, it took a while. There must be a better way.
 
-So instead of tracking each individual fish, instead we will keep a Counter of how many fish are at timer 5, 3, 0, etc.
+So instead of tracking each individual fish, we will keep a Counter of how many fish are at timer 5, 3, 0, etc.
 Iterating per day would simply mean taking the number of '5's and making them 4. The zeros become 6, and we add that number of 8s.
 Our counter will have at most 9 items to track.
 """
@@ -20,11 +20,12 @@ Our counter will have at most 9 items to track.
 from typing import Any, List, Optional
 from collections import Counter
 
+
 class Lanternfish:
 
     def __init__(self, timer: int = 8):
         self.timer = timer
-    
+
     def age(self) -> Optional[Any]:
         if self.timer == 0:  # Spawn a new Lanternfish
             self.timer = 6
