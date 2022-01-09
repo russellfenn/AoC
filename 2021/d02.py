@@ -88,6 +88,6 @@ def solve_part2(program: Program) -> int:
 if __name__ == "__main__":
     with open('d02.input', 'r') as f:
         program: Program = f.readlines()
-   
+
     print(f"[Part 1] Our position*depth is {solve_part1(program)}.")
     print(f"[Part 2] Using 'aim', our position*depth is now {solve_part2(program)}.")
