@@ -8,10 +8,12 @@ values to compare.
 Model the input data as a list of lists.
 """
 
-from typing import List, Tuple
+from typing import List, Set, Tuple
+from collections import namedtuple
 
 Grid = List[List[int]]
-Point = Tuple[int, int]
+# Point = Tuple[int, int]
+Point = namedtuple('Point', ['x','y'])
 
 
 def parse_puzzle_input(input_lines: List[str]) -> Grid:
@@ -55,7 +57,7 @@ def find_local_minima(grid: Grid) -> List[Point]:
     for y in range(len(grid)):
         for x in range(len(grid[0])):
             if is_minima(grid, x, y):
-                minima.append((x, y))
+                minima.append(Point(x, y))
     return minima
 
 
@@ -71,6 +73,80 @@ def solve_part1(grid: Grid) -> int:
     return risk_level
 
 
+class MapGrid:
+    """Class with some access methods to simplify getting depth readings."""
+    def __init__(self, grid: Grid):
+        self.grid = grid
+        self.max_x = len(self.grid[0]) - 1
+        self.max_y = len(self.grid) -1
+
+    def depth(self, p: Point) -> int:
+        """Return the depth at the given point."""
+        if p.x < 0 or p.x > self.max_x:
+            raise ValueError(f"Point x value {p.x} out of range [0, {self.max_x}]")
+        if p.y < 0 or p.y > self.max_y:
+            raise ValueError(f"Point y value {p.y} out of range [0, {self.max_y}]")
+        return self.grid[p.y][p.x]
+
+
+def get_basin(mg: MapGrid, start_point: Point) -> Set[Point]:
+    """Given a starting point in a MapGrid, return all points that
+      lead down to that point.
+
+      I.O.W. All points in the MapGrid surrounding the start_point whose
+      depth is less than 9.
+    """
+    basin: Set[Point] = set([start_point])
+    basin_size: int = 0
+    test_point: Point   
+    while True:
+        basin_size = len(basin)
+        for p in list(basin):  # copy to a list so we can add points without raising an exception
+            # start by going left
+            test_point = Point(p.x - 1, p.y)
+            try:
+                if mg.depth(test_point) < 9:
+                    basin.add(test_point)
+            except ValueError:
+                pass
+            # then right
+            test_point = Point(p.x + 1, p.y)
+            try:
+                if mg.depth(test_point) < 9:
+                    basin.add(test_point)
+            except ValueError:
+                pass
+            # up
+            test_point = Point(p.x, p.y - 1)
+            try:
+                if mg.depth(test_point) < 9:
+                    basin.add(test_point)
+            except ValueError:
+                pass
+            # down
+            test_point = Point(p.x, p.y + 1)
+            try:
+                if mg.depth(test_point) < 9:
+                    basin.add(test_point)
+            except ValueError:
+                pass
+        # recalculate the basin size to see if we added any points
+        if basin_size == len(basin):
+            break
+    return basin
+
+
+def solve_part2(grid: Grid) -> int:
+    minima: List[Point] = find_local_minima(grid)
+    mg: MapGrid = MapGrid(grid)
+    basins: List[Set[Point]] = list()
+    for m in minima:
+        basins.append(get_basin(mg, m))
+    basin_sizes = [len(b) for b in basins]
+    top_three_basins = sorted(basin_sizes)[-3:]
+    return top_three_basins[0] * top_three_basins[1] * top_three_basins[2]
+
+
 if __name__ == "__main__":
     from test_d09 import example_input
     example_puzzle: Grid = parse_puzzle_input(example_input.splitlines())
@@ -79,3 +155,4 @@ if __name__ == "__main__":
         puzzle: Grid = parse_puzzle_input([l.rstrip() for l in f.readlines()])
 
     print(f"[Part 1] Sum of risk levels: {solve_part1(puzzle)}")
+    print(f"[Part 2] Product of top three basin sizes: {solve_part2(puzzle)}")
