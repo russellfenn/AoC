@@ -1,5 +1,5 @@
 """Day 9
-Smoke Flows
+Smoke Flows / Basins
 
 We are given a grid of numbers (that represent height). The goal of part 1 is to find local minima,
 by comparing to the adjacent values (up, down, left, right). On edges and corners, there are fewer
@@ -49,15 +49,20 @@ def is_minima(grid: Grid, x: int, y: int) -> bool:
     return grid[y][x] < min(adjacent_points)
 
 
-def solve_part1(grid: Grid) -> int:
-    # find all the minima
+def find_local_minima(grid: Grid) -> List[Point]:
+    """Return a list of low points in the grid."""
     minima: List[Point] = list()
     for y in range(len(grid)):
         for x in range(len(grid[0])):
             if is_minima(grid, x, y):
                 minima.append((x, y))
+    return minima
+
+
+def solve_part1(grid: Grid) -> int:
+    # find all the minima
+    minima: List[Point] = find_local_minima(grid)
     print(f"Found {len(minima)} minima.")
-    print(minima)
     # risk_level is height of a minima + 1
     # find the sum of risk_levels
     risk_level: int = 0
