@@ -80,3 +80,17 @@ Out[10]: 10
 ```
 
 In the Crab submarine puzzle [Day 7](d07.py), I incorrectly made the list too short, but that was hidden by "silently truncated" slices, leading me to the wrong answer.
+
+## functools.reduce
+
+[functools.reduce](https://docs.python.org/3/library/functools.html#functools.reduce) applies a given function cumulatively
+to the items of the iterable.
+
+A couple times in these puzzles, I have needed a **product**(_iterable_) function similar to the built-in [sum](https://docs.python.org/3/library/functions.html#sum) function. I wrote a function in [2020 Day 1](2020/d01.py), but that can be simplified with
+
+```python
+from functools import reduce
+from operator import mul
+top_three_basins: List[int] = [9, 9, 14]
+product: int = reduce(mul, top_three_basins)
+```

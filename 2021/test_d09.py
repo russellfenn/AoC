@@ -1,5 +1,7 @@
 from d09 import Grid, MapGrid, find_local_minima, get_basin, parse_puzzle_input, is_minima, solve_part1, Point
 from typing import List, Set
+from functools import reduce
+from operator import mul
 import pytest
 
 
@@ -49,4 +51,4 @@ def test_example_basins():
     assert basin_sizes == [3, 9, 14, 9]
     top_three_basins = sorted(basin_sizes)[-3:]
     assert top_three_basins == [9, 9, 14]
-    assert top_three_basins[0] * top_three_basins[1] * top_three_basins[2] == 1134
+    assert reduce(mul, top_three_basins) == 1134

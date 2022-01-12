@@ -8,8 +8,10 @@ values to compare.
 Model the input data as a list of lists.
 """
 
-from typing import List, Set, Tuple
+from typing import List, Set
 from collections import namedtuple
+from functools import reduce
+from operator import mul
 
 Grid = List[List[int]]
 # Point = Tuple[int, int]
@@ -144,7 +146,7 @@ def solve_part2(grid: Grid) -> int:
         basins.append(get_basin(mg, m))
     basin_sizes = [len(b) for b in basins]
     top_three_basins = sorted(basin_sizes)[-3:]
-    return top_three_basins[0] * top_three_basins[1] * top_three_basins[2]
+    return reduce(mul, top_three_basins)
 
 
 if __name__ == "__main__":

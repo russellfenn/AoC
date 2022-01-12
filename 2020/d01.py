@@ -5,11 +5,13 @@ Given a list of numbers, find a pair that sums to 2020. Return the product of th
 
 import itertools
 from typing import List
-
+from functools import reduce
+from operator import mul
 
 target_value = 2020
 
 # Use itertools.combinataions to produce a list of all pairs
+
 
 def solve_two(input_list: List[int],
               target: int = target_value,
@@ -24,6 +26,9 @@ def solve_two(input_list: List[int],
 def product(inputs: List[int]) -> int:
     """We can use the built-in `sum` to sum a list,
        but there is no corresponding function for product.
+
+       Refactor: Using functools.reduce and operator mul, we
+       can do this more succinctly: reduce(mul, inputs)
     """
     accumulator = 1  # safe for multipliction
     for i in inputs:
@@ -41,7 +46,7 @@ def solve_generic(input_list: List[int],
     for c in itertools.combinations(input_list, num_elements):
         if sum(c) == target_value:
             print(c)
-            return product(c)
+            return reduce(mul, c)
 
 
 if __name__ == "__main__":
