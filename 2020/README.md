@@ -12,7 +12,7 @@ The alias also helped to reduce confusion -> in refactoring, I realized the type
 
 ### str.splitlines
 
-[splitlines](https://docs.python.org/3/library/stdtypes.html#str.splitlines) will split a string on any of a whole set of line-end markers. 
+[splitlines](https://docs.python.org/3/library/stdtypes.html#str.splitlines) will split a string on any of a whole set of line-end markers. The best part is that it does not return the line-ends (unless you want them).
 
 `data.split('\n')` => `data.splitlines()`
 
