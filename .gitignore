@@ -1,4 +1,5 @@
 .pytest_cache
 Pipfile.lock
+poetry.lock
 */.pytest_cache
 */__pycache__
