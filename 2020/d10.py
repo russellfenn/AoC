@@ -6,7 +6,7 @@ Day 10 - Joltage Adapters
 Given a list of 'joltages', put the list in order, then determine the
 differences between each one.
 For this part, simply sorting numerically seems to be ok. It's hard to
-believe they went through such an elaborate set-up for something this 
+believe they went through such an elaborate set-up for something this
 simple, so I expect part 2 will throw a big twist.
 """
 

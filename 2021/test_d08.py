@@ -14,6 +14,8 @@ egadfb cdbfeg cegd fecab cgb gbdefca cg fgcdab egfdb bfceg | gbdfcae bgc cg cgb
 gcafb gcf dcaebfg ecagb gf abcdeg gaef cafbge fdbac fegbdc | fgae cfgab fg bagce
 """
 
+example_part_2_answers = ["8394", "9781", "1197", "9361", "4873", "8418", "4548", "1625", "8717", "4315"]
+
 
 def test_parsing_puzzle_input():
     puzzles: List[Tuple] = list()
@@ -48,4 +50,5 @@ part2_example_input = "acedgfb cdfbe gcdfa fbcad dab cefabd cdfgeb eafb cagedb a
 
 def test_part2():
     puzzle: Puzzle = parse_puzzle_input_line(part2_example_input)
+    return puzzle
 

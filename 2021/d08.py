@@ -24,11 +24,24 @@ the jumbled signals map to the digit segments.
 
 The difference between 1 (cf) and 7 (acf) is the top "a" segment. So knowing the len(2) outupt is "1",
 we know the len(3) output is "7" AND the extra segment is "a". But we still don't know which are the "c"
-or "f" segments. After removing the 1 and 7 from our list of unknowns,
-the "c" segment appears in 6/8 output digits, and the "f" segment is in 7/8.
+or "f" segments.
 
-The 4 gives us the "c" and "f" segments (already known), and the "b" and "d" segments.
-Again after removing the 4, the "d" is in 6/7 and "b" is in 5/7, so we can use the same technique to get those two.
+Thinking in terms of frequency: how many digits does a given segment appear in?
+
+| Segment | Count | Note         |
+|=========|=======|==============|
+|    a    |   8   | Not 1, 4     |
+|    b    |   6   |              |
+|    c    |   8   | Not 5, 6     |
+|    d    |   7   |              |
+|    e    |   4   | 0, 2, 6, 8   |
+|    f    |   9   | All except 2 |
+|    g    |   7   |              |
+
+'f' appears in all except 2, so whichever unknown digit is missing the 'f' musts be 2.
+
+The 4 gives us the "c" and "f" segments (already known), and the "b" and "d" segments (now yet known).
+the "d" is in 6/7 and "b" is in 5/7, so we can use the same technique to get those two.
 
 So at this point, we can identify digits 1,4,7,8 and segments "abcdf".
 
@@ -43,12 +56,13 @@ list of sets instead of list of lists.
 Example:
 
 Signal  acedgfb cdfbe gcdfa fbcad dab cefabd cdfgeb eafb cagedb ab | cdfeb fcadb cdfeb cdbaf
-Length     8      5     5     5    3    6      6     4     6     2
-Digit      8                       7                 4           1
+Sorted  abcdefg bcdef acdfg abcdf abd abcdef bcdefg abef abcdeg ab | bcdef abcdf bcdef abcdf
+Length     7      5     5     5    3    6      6     4     6     2 |   5     5     5     5
+Digit      8      5     2     3    7    9      6     4     0     1 |   5     3     5     3
 
 """
-from typing import Dict, List, Set, Tuple
-from collections import Counter
+from typing import Dict, FrozenSet, List, Set, Tuple, Union
+from collections import Counter, defaultdict
 
 # Segments lit for each "correct" output digit
 segment_map: Dict[str, Set[str]] = {
@@ -67,11 +81,9 @@ segment_map: Dict[str, Set[str]] = {
 
 # Some type aliases
 PuzzleLine = Tuple[List[str]]
-Signal = Set[str]
+Signal = FrozenSet[str]
 Puzzle = Tuple[List[Signal], List[Signal]]
 Segments = Dict[str, str]  # Maps output segments -> original segments
-segments: Segments = dict()
-
 
 
 def parse_puzzle_input_line(puzzle_str: str) -> Puzzle:
@@ -83,7 +95,7 @@ def parse_puzzle_input_line(puzzle_str: str) -> Puzzle:
     input_str, output_str = puzzle_str.split('|')
     input_signals = [''.join(sorted(i)) for i in input_str.split()]
     output_signals = [''.join(sorted(o)) for o in output_str.split()]
-    return [set(i) for i in input_signals], [set(o) for o in output_signals]
+    return [frozenset(i) for i in input_signals], [frozenset(o) for o in output_signals]
 
 
 def solve_part1(puzzles: List[Tuple[str]]) -> int:
@@ -98,25 +110,46 @@ def solve_part1(puzzles: List[Tuple[str]]) -> int:
     lengths_list: List[int] = [c[2], c[4], c[3], c[7]]
     return sum(lengths_list)
 
+def element_frequency(f: Union[Set,List], inputs: Puzzle) -> Counter:
+    """Count how many times the letters in the givin digit appear in the overall puzzle.
+      This allows us to use letter frequency to differentiate segments.
+    """
+    c = Counter()
+    for elt in f:
+        c[elt] = sum([elt in digit for digit in inputs])
+    return c
 
 def map_wires(signals: List[Signal]) -> Segments:
     unknown_digits: List[Signal] = signals[:]
-    known_digits: Dict[str, Signal] = dict()
-    lengths: List[int]
-    lengths = [len(s) for s in unknown_digits]
-    # one has length 2
-    one_i = lengths.index(2)
-    known_digits['1'] = unknown_digits.pop(one_i)
-    lengths = [len(s) for s in unknown_digits]
-    # seven has length 3
-    seven_i = lengths.index(3)
-    known_digits['7'] = unknown_digits.pop(seven_i)
-    # eight has length 8
-    eight_i = lengths.index(7)
-    known_digits['8'] = unknown_digits.pop(eight_i)
+    known_digits: Dict[int, Signal] = dict()  # Move Signals here once we identify them
+    # Group the unknowns by length
+    by_length: Dict[int, Set] = defaultdict(set)
+    for signal in unknown_digits:
+        by_length[len(signal)].add(signal)
+    print(f"{by_length=}")
+
+    # one is the only digit with length 2
+    known_digits[1] = by_length[2].pop()
+    del by_length[2]
+    # seven is the only digit with length 3
+    known_digits[7] = by_length[3].pop()
+    del by_length[3]
+    # eight uses all seven segments
+    known_digits[8] = by_length[7].pop()
+    del by_length[7]
+    # four is length 4
+    known_digits[4] = by_length[4].pop()
+    del by_length[4]
+
+    # At this point, we have identified 1, 4, 7, 8
+    # 
+
     # Now start to identify segments
-    known_segments: Segments = dict()
-    known_segments['a'] = list(known_digits['7'] - known_digits['1'])[0]
+    known_segments: Segments = dict()  # Maps puzzle segments to correct segments
+    # The seven and one differ by the 'a' segment
+    known_segments[list(known_digits[7] - known_digits[1])[0]] = 'a'
+
+    return by_length, known_digits, known_segments
     one_parts: List[str] = list(known_digits['1'])
     for part in one_parts:
         count: int = sum([part in s for s in unknown_digits])
@@ -140,7 +173,8 @@ def map_wires(signals: List[Signal]) -> Segments:
     return known_segments
 
   
-
+def solve_part2(puzzles: List[Tuple[str]]) -> int:
+    map_wires(puzzles)
 
 
 if __name__ == "__main__":
@@ -150,3 +184,4 @@ if __name__ == "__main__":
             puzzle_inputs.append(parse_puzzle_input_line(line))
 
     print(f"[Part 1] Easy digits 1, 4, 7, 8 appear {solve_part1(puzzle_inputs)} times.")
+    print(f"[Part 2] Sum of output values is {solve_part2(puzzle_inputs)}")

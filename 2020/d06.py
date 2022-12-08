@@ -9,6 +9,7 @@ Part 2 - how many questions dis _everyone_ in the group answer
 from typing import List, Set
 from collections import Counter
 
+
 def parse_input_anyone(data: List[str]) -> List[Set[str]]:
     """Put the letters into a Set to eliminate duplicates."""
     groups: List[Set[str]] = list()

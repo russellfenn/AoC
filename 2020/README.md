@@ -30,3 +30,12 @@ Out[11]: 43981
 ```
 
 See [Day 05 Tests](test_d05.py) for this technique in action.
+
+## Puzzle Outlines
+
+1. Iterate over combinations.
+2. 
+3. Traverse a grid.
+4. Data validation.
+5. Binary search.
+6. Grouping and counting sets of items.

@@ -50,9 +50,10 @@ def expand_grid(grid: List[str], count: int) -> List[str]:
 
 
 def traverse_grid(grid: List):
-    x = 0
-    y = 0
-    for i in range(len(grid)):
+    """First, simplest approach."""
+    x: int = 0
+    y: int = 0
+    for _ in range(len(grid)):
         print(f"{x} {y} {grid[y][x]}")
         x += 3
         y += 1
@@ -83,7 +84,7 @@ if __name__ == "__main__":
 
     with open('d03.input', 'r') as f:
         grid = load_grid(f.read())
-    
+
     # See how wide we need to expand, given x=3
     expansion_factor = len(grid) // 3
     expanded_grid = expand_grid(grid, expansion_factor)
@@ -98,10 +99,10 @@ if __name__ == "__main__":
         (3, 1),
         (5, 1),
         (7, 1),
-        (1, 2)
+        (1, 2),
     ]
 
-    print(f"Trying all slopes:")
+    print("Trying all slopes:")
     part_two: List[int] = list()
     for slope in slopes:
         c = Counter(traverse_narrow_grid(grid, *slope))

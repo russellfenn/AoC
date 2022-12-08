@@ -94,3 +94,17 @@ from operator import mul
 top_three_basins: List[int] = [9, 9, 14]
 product: int = reduce(mul, top_three_basins)
 ```
+
+## Puzzle Types / Outlines
+
+ 1.
+ 2.
+ 3.
+ 4.
+ 5.
+ 6.
+ 7.
+ 8.
+ 9. Grid. Find minimum values.
+10. 
+11. Iterate over grid. State change affects neighboring items.

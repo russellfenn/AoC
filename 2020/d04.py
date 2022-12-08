@@ -2,7 +2,9 @@
 Day 04
 Data Validation
 
-The automatic passport scanners are slow because they're having trouble detecting which passports have all required fields. The expected fields are as follows:
+The automatic passport scanners are slow because they're having trouble
+detecting which passports have all required fields. The expected fields
+are as follows:
 
 byr (Birth Year)
 iyr (Issue Year)
