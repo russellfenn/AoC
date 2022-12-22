@@ -10,7 +10,6 @@ example_puzzle = """2-4,6-8
 """
 
 
-
 def test_string_splitting():
     """Ensure our string split method works."""
     assert split_string_into_sets('2-4,6-8') == [{2, 3, 4}, {6, 7, 8}]

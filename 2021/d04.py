@@ -26,11 +26,10 @@ Maybe keeping an index of our position in the number list would have helped.
 
 import collections
 from typing import List, Tuple, Union
-from dataclasses import dataclass
 
 
 class BingoCard(List):
-    
+    """Represents a Bingo Card - essentially a list of lists making a 5x5 grid."""
     def __init__(self, data: List = None):
         if isinstance(data, List):
             if not len(data) == 5:
@@ -39,8 +38,9 @@ class BingoCard(List):
                 if not len(row) == 5:
                     raise ValueError("Expecting 5 lists of 5 items")
                 self.append(row)
-    
+
     def is_good_bingo(self) -> bool:
+        """Do we have 5 in a row or column?"""
         # Rows are easier, check them first
         for row in self:
             if not any(row):
