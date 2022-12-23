@@ -59,7 +59,7 @@ def test_simple_directoryy():
     d.files.append(File("f", 29116))
     # d.files.append(File("g", 2557))
     # d.files.append(File("h.lst", 62596))
-    assert repr(d) == 'Directory(name="/", dirs=[], files=[File(name="f", size=29116)])'
+    assert repr(d) == 'Directory(name="/", dirs={}, files=[File(name="f", size=29116)])'
 
 
 def test_command_separator():

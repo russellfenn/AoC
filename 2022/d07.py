@@ -30,20 +30,20 @@ class File:
 @dataclass
 class Directory:
     name: str
-    dirs: list['Directory']
+    dirs: dict[str, 'Directory']
     files: list[File]
     depth: int
 
     def __init__(self, name: str, depth:int = 0):
         self.name = name
-        self.dirs = list()
+        self.dirs = dict()
         self.files = list()
         self.depth = depth
 
     def __str__(self):
         output: list(str) = list()
         output.append(" " * self.depth + "- " + f"{self.name} (dir)")
-        for directory in self.dirs:
+        for directory in self.dirs.values():
             output.append(str(directory))
         for file in self.files:
             output.append(" " * self.depth + "- " + str(file))
@@ -57,7 +57,7 @@ class Directory:
 
     def add_directory(self, directory):
         directory.depth = self.depth + 1
-        self.dirs.append(directory)
+        self.dirs[directory.name] = directory
 
 
 def separate_commands(input: list[str]) -> list[list[str]]:
