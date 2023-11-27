@@ -6,6 +6,11 @@
 02.
 03. Some set operations. After solving in a straightforward way, I reimplemented
     it using [itertools.islice](https://docs.python.org/3/library/itertools.html#itertools.islice)
+04.
+05.
+06. Pretty simple iterating over a string and slicing.
+07. Tree.
+08. Grid
 
 
 ## AI Fail
@@ -44,3 +49,9 @@ In the [recipes](https://docs.python.org/3/library/itertools.html#itertools-reci
 we find the "batched" function to "Batch data into lists of length n."
 
 This was exactly what I needed on [day 3](d03.py).
+
+### __str__ and __repr__
+
+I still find these confusing... I kind of get that __str__ is for humans (e.g. readable), where __repr__ tries to make a canonical representation that can reconstruct an object.
+
+Today I learned that calling __str__ on a container object will in turn call __repr__ on the objects contained within.
