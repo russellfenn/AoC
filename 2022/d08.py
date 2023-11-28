@@ -102,6 +102,36 @@ def is_visible(grid: Grid, x: int, y: int) -> bool:
     return False
 
 
+def viewing_distance(height: int, trees: list[int]) -> int:
+    """Return the number of trees until one our height or greater"""
+    for i, t in enumerate(trees):
+        if t >= height:
+           return i + 1
+    return len(trees)
+
+
+def calc_scenic_score(grid: Grid, x: int, y: int) -> int:
+    """Compute the viewing distance in each direction for the
+       given tree. Multiply all four values for a "scenic score".
+       Remember when looking west or north, reverse the order
+       of the tree list, because our reference is _from the tree_
+       rather than from outside the grid.
+    """
+    height: int = grid[y][x]  # swap x,y
+    score: int = viewing_distance(height, get_east(grid, x, y))
+    score *= viewing_distance(height, get_south(grid, x, y))
+    # now we have to check the list length and reverse
+    trees: list[int] = get_west(grid, x, y)
+    if len(trees) > 1:
+        trees = list(reversed(trees))
+    score *= viewing_distance(height, trees)
+    trees: list[int] = get_north(grid, x, y)
+    if len(trees) > 1:
+        trees = list(reversed(trees))
+    score *= viewing_distance(height, trees)
+    return score
+
+
 def solve_part1(grid: Grid) -> int:
     """Count visible trees"""
     visibility_list: list = []
@@ -111,7 +141,17 @@ def solve_part1(grid: Grid) -> int:
     return sum(visibility_list)
 
 
+def solve_part2(grid: Grid) -> int:
+    """Calculate all the scenic scores, and return the highest one"""
+    all_scores: list[int] = []
+    for y in range(len(grid)):
+        for x in range(len(grid[0])):
+            all_scores.append(calc_scenic_score(grid, x, y))
+    return max(all_scores)
+
+
 if __name__ == "__main__":
     with open("d08.input", "r") as f:
         puzzle: Grid = parse_puzzle_input([l.strip() for l in f.readlines()])
     print(f"[Part 1] Visible trees: {solve_part1(puzzle)}")
+    print(f"[Part 2] Max Scenic Score: {solve_part2(puzzle)}")

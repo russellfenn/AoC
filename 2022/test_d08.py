@@ -7,6 +7,8 @@ from d08 import (
     get_south,
     is_visible,
     solve_part1,
+    calc_scenic_score,
+    solve_part2,
 )
 from pytest import fixture, raises
 
@@ -56,8 +58,19 @@ def test_visible(example_grid):
     assert is_visible(example_grid, 3, 1) == False  # from puzzle description
 
 
-
 def test_part_1_with_example(example_grid):
     """Part 1"""
     answer: int = solve_part1(example_grid)
     assert answer == 21
+
+
+def test_example_scenic_scores(example_grid):
+    """Examples given in problem statement"""
+    assert calc_scenic_score(example_grid, 2, 1) == 4
+    assert calc_scenic_score(example_grid, 2, 3) == 8
+
+
+def test_part_2_with_example(example_grid):
+    """Part 2"""
+    max_score: int = solve_part2(example_grid)
+    assert max_score == 8
