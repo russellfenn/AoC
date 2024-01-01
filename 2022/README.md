@@ -11,7 +11,7 @@
 06. Pretty simple iterating over a string and slicing.
 07. Tree.
 08. Grid
-
+09. Grid, Points
 
 ## AI Fail
 
@@ -20,6 +20,7 @@ After puzzle day 1 was released, sombody on Twitter claimed they generated the  
 ```python
 calories = [int(line) for line in example_puzzle.strip().split('\n')]
 ```
+
 Another person said it would fail trying to convert the blank lines to _int_. That is in fact what happens.
 
 ```python
@@ -55,3 +56,39 @@ This was exactly what I needed on [day 3](d03.py).
 I still find these confusing... I kind of get that __str__ is for humans (e.g. readable), where __repr__ tries to make a canonical representation that can reconstruct an object.
 
 Today I learned that calling __str__ on a container object will in turn call __repr__ on the objects contained within.
+
+### Classes that reference themselves
+
+On Day 09, I used a Point class. Actually, I started out with a Point namedtuple, but then thought it would be useful to have some methods that manipulated some point, and another related point.
+(In the puzzle, Head and Tail were related, and Tail followed the Head according to some silly rules).
+
+```python
+
+class Point:
+
+    ...
+    def delta(self, p: Point):  
+        pass
+```
+
+This fails with a NameError under Python 3.9 -- the p: Point arg is unknown because the Point class is not yet defined.
+
+NameError: name 'Point' is not defined
+
+Real Python has a good article [Python's Self Type](https://realpython.com/python-type-self/) that gives several options.
+
+For Python 3.9 this worked: `from __future__ import annotations`.
+
+In Python 3.11, you can do it this way
+
+```python
+from typing import Self
+class Point:
+
+    ...
+    def delta(self, p: Self):  
+        pass
+
+    def clone(self) -> Self:
+        pass
+```

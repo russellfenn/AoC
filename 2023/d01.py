@@ -37,27 +37,27 @@ def solve_part_1(puzzle: list[str]) -> int:
     return sum(find_digits(puzzle))
 
 
-spelled_out_digits = [
-    ("one", "1"),
-    ("two", "2"),
-    ("three", "3"),
-    ("four", "4"),
-    ("five", "5"),
-    ("six", "6"),
-    ("seven", "7"),
-    ("eight", "8"),
-    ("nine", "9"),
-]
+spelled_out_digits = {
+    "one": "1",
+    "two": "2",
+    "three": "3",
+    "four": "4",
+    "five": "5",
+    "six": "6",
+    "seven": "7",
+    "eight": "8",
+    "nine": "9",
+}
 
 
 def replace_spelled_out_digits(line: str) -> str:
     """Replace spelled out digits with their string equivalents.
-    
        Be careful! Some values are tricky:
-          "eightwothree" should be 83, but of you replace the strings
+          "eightwothree" should be "823" -> 83,
+          but of you replace the strings
           in numerical order, you end up with 23.
     """
-    for digit_word, digit_str in spelled_out_digits:
+    for digit_word, digit_str in spelled_out_digits.items():
         line = line.replace(digit_word, digit_str)
     return line
 

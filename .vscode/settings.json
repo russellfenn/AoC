@@ -1,8 +1,8 @@
 {
     "python.testing.pytestArgs": [
-        "2020",
         "2021"
     ],
     "python.testing.unittestEnabled": false,
-    "python.testing.pytestEnabled": true
+    "python.testing.pytestEnabled": true,
+    "python.analysis.typeCheckingMode": "basic"
 }

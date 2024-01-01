@@ -1,0 +1,8 @@
+services:
+  python:
+    build:
+      dockerfile: Dockerfile
+    volumes:
+      - ${PWD}:/src
+    tty: true
+    working_dir: /src
