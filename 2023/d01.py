@@ -53,13 +53,26 @@ spelled_out_digits = {
 def replace_spelled_out_digits(line: str) -> str:
     """Replace spelled out digits with their string equivalents.
        Be careful! Some values are tricky:
-          "eightwothree" should be "823" -> 83,
+          "eightwothree" should be "8wo3" -> 83,
           but of you replace the strings
-          in numerical order, you end up with 23.
+          in numerical order, you end up with "eigh23" -> 23.
     """
-    for digit_word, digit_str in spelled_out_digits.items():
-        line = line.replace(digit_word, digit_str)
+    # this replaces words in the order they appear in the spelled_out_digits dict
+    # which is wrong
+    # for digit_word, digit_str in spelled_out_digits.items():
+    ##    line = line.replace(digit_word, digit_str)
+    # return line
+
+    # we need to instead go in order that the words appear in the line
+    start_position: int = 0
+    for i in range(len(line) + 1):
+        print(f"testing '{line}'")
+        if line[start_position:i] in spelled_out_digits:
+            line = spelled_out_digits[line[start_position:i]] + line[i:]
+            print(f"line is now {line}")
+            start_position = i+1
     return line
+
 
 
 def solve_part_2(puzzle: list[str]) -> int:
@@ -71,6 +84,8 @@ def solve_part_2(puzzle: list[str]) -> int:
 
 
 if __name__ == "__main__":
+    replace_spelled_out_digits("eightwothree")
+    
     with open("d01.input", "r", encoding="UTF-8") as f:
         puzzle_input = [line.rstrip() for line in f.readlines()]
     print(f"[Part 1] Sum of calibration values: {solve_part_1(puzzle_input)}")

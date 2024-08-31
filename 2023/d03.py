@@ -40,6 +40,33 @@ Puzzle Part 1:
 Sum the part numbers (numbers that are adjacent to a symbol only).
 """
 
+class Cell:
+    """A Two-dimensional Cell with X, Y coordinates"""
+    def __init__(self, x: int = 0, y: int = 0):
+        self._x = x
+        self._y = y
+
+    def __repr__(self):
+        return f"Cell({self._x}, {self._y})"
+    
+    def __str__(self):
+        return f"({self._x}, {self._y})"
+
+    @property
+    def x(self) -> int:
+        return self._x
+
+    @x.setter
+    def x(self, value:int):
+        self._x = value
+
+    @property
+    def y(self) -> int:
+        return self._y
+
+    @y.setter
+    def y(self, value:int):
+        self._y = value
 
 class Grid:
     """A grid of cells"""
@@ -133,6 +160,15 @@ class Grid:
                 if value > 0:
                     found_numbers.append(value)
         return found_numbers
+
+    def find_gears(self) -> list[Cell]:
+        """Find all 'gears' i.o.w. asterisk characters"""
+        gear_list: list[Cell] = []
+        for y in range(self.y_max + 1):
+            for x in range(self.x_max + 1):
+                if self.cells[y][x] == '*':
+                    gear_list.append(Cell(x, y))
+        return gear_list
 
 
 def solve_part_1(grid: Grid) -> int:
