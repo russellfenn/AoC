@@ -1,6 +1,8 @@
 """Test Day 04"""
-from d04 import Puzzle, solve_part_1
+from d04 import Puzzle, solve_part_1, count_part_2_cards, solve_part_2
 from pytest import fixture
+
+from collections import Counter
 
 example_cards = """Card 1: 41 48 83 86 17 | 83 86  6 31 17  9 48 53
 Card 2: 13 32 20 16 61 | 61 30 68 82 17 32 24 19
@@ -33,14 +35,34 @@ def test_parse_and_score_cards():
     assert sum(scores) == 13
 
 
-def test_solve_part_1(part_1_example_puzzle):
+def test_solve_part_1(part_1_example_puzzle: list[Puzzle]):
     """Solve with the real method this time"""
     assert solve_part_1(part_1_example_puzzle) == 13
 
 
-def test_card_numbers(part_1_example_puzzle):
+def test_match_counts(part_1_example_puzzle: list[Puzzle]):
+    """Just count the number of matches per card"""
+    match_counts: list[int] = [c.matches() for c in part_1_example_puzzle]
+    assert match_counts == [4, 2, 2, 1, 0, 0]
+
+
+def test_card_numbers(part_1_example_puzzle: list[Puzzle]):
     """Verify that we parse card numbers correctly.
        These will be important for part 2...
     """
     card_numbers: list[int] = [c.card_number for c in part_1_example_puzzle]
     assert card_numbers == [1, 2, 3, 4, 5, 6]
+
+
+def test_adding_cards_per_match(part_1_example_puzzle: list[Puzzle]):
+    """Run the part 2 algorithm to sum up my winning cards"""
+    card_stack: Counter = count_part_2_cards(part_1_example_puzzle)
+    for card, count in [(1, 1), (2, 2), (3, 4), (4, 8), (5, 14), (6, 1)]:
+        assert card_stack[card] == count
+    assert sum(card_stack.values()) == 30
+
+
+def test_solve_part_2(part_1_example_puzzle: list[Puzzle]):
+    """Run the real method against the example data"""
+    card_count: int = solve_part_2(part_1_example_puzzle)
+    assert card_count == 30
