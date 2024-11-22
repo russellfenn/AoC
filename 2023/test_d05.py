@@ -52,7 +52,6 @@ def test_range():
     assert 79 + r2.offset == 81
 
 
-
 def test_basic_elfmap():
     """Just manually test the seed_to_soil map given in the problem description"""
     seed_to_soil = ElfMap()
@@ -86,5 +85,7 @@ def test_parse_puzzle(example_puzzle):
 
 
 def test_solve_part_1(example_puzzle):
-    best_location: int = solve_part_1(parse_puzzle_input(example_puzzle))
+    puzzle_map: dict = parse_puzzle_input(example_puzzle)
+    seeds: list[int] = puzzle_map['seeds']
+    best_location: int = solve_part_1(puzzle_map, seeds)
     assert best_location == 35

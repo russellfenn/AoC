@@ -140,10 +140,11 @@ def parse_puzzle_input(input: list[str]) -> dict:
     return puzzle_dict
 
 
-def solve_part_1(puzzle_dict: dict[str, list]) -> int:
+def solve_part_1(puzzle_dict: dict[str, list],
+                 seeds: list[int]) -> int:
     """This may be the most deeply nested function I've ever made..."""
     locations: list[int] = []
-    for seed in puzzle_dict["seeds"]:
+    for seed in seeds:
         locations.append(
             puzzle_dict["humidity-to-location"].get(
                 puzzle_dict["temperature-to-humidity"].get(
