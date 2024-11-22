@@ -20,9 +20,35 @@ As expected the method of creating giant dictionaries failed (at least on my chr
 I think I saw the same issue on an earlier puzzle where my solution worked on a 
 desktop, but failed on my Raspberry Pi.
 
+I solved the giant dictionary problem by refactoring the ElfMap to hold a list of
+range boundaries (rather than the entire range). This worked well.
+
+For the second part, pairs of seed values are start:length, which means
+we need to repeat the calculations a very large number of times.
+
+Not clear to me if memoization would help to avoid repeating the same calculations
+more than once, or if there is a smarter way to calculate.
+
+Visual inspection of the input values:
+
+seeds: 487758422 524336848 2531594804 27107767 1343486056 124327551 ...
+
+Shows us that the first range is 500M+ values... so calculating all of them
+will be very intensive, and there is no obvious overlap of ranges, so memoization
+is unlikely to help.
+
+The next strategy is to consider that ther first map (seed-to-soil) is in fact
+a list of ranges, so any input within that range will yeild the same value.
+
+Thinking of it this way, there are only 25 possible values (one for each mapping
+value in the seed-to-soil map). Not every seed may map to a seed-to-soil range,
+so simply calculating all 25 may not get us the right answer -- we will need
+to determine which seed ranges map to a seed-to-soil map. But with only 25
+it's at least a tractable problem.
+
 
 """
-
+import sys
 from typing import Any
 
 
@@ -54,7 +80,7 @@ class ElfMap:
     """
     def __init__(self):
         self.ranges: list[Range] = []
-    
+
     def add(self,
             dest_start: int,
             source_start: int,
@@ -68,7 +94,7 @@ class ElfMap:
                                  dest_start - source_start
                                  )
                            )
-        
+
     def get(self, value: int) -> int:
         """Get the mapped value.
            If a value is in one of this maps' ranges,
@@ -80,7 +106,6 @@ class ElfMap:
             if r.in_range(value):
                 return value + r.offset
         return value
-
 
 
 class ElfMapAsDict(dict):
@@ -128,7 +153,7 @@ def parse_puzzle_input(input: list[str]) -> dict:
         # the first line of a chunk is the map name
         if "map" in chunk[0]:
             map_name, _ = chunk[0].split()
-            print(f"Building map: {map_name}")
+            # print(f"Building map: {map_name}")
             em: ElfMap = ElfMap()
             for line in chunk[1:]:
                 vals: list[int] = [int(v) for v in line.split()]
@@ -163,9 +188,27 @@ def solve_part_1(puzzle_dict: dict[str, list],
     return min(locations)
 
 
+def solve_part_2(puzzle_dict: dict[str, list],
+                 seeds: list[int]) -> int:
+    """Essentially the same as Part 1, but this time seeds are
+       given as a huge range, so we will call the Part 1 solver
+       a zillion times.
+    """
+    lowest_value: int = sys.maxsize
+    for i in range(0, len(seeds), 2):
+        print(f"Computing seeds {seeds[i]} -> {seeds[i] + seeds[i+1]} ({seeds[i+1]} values)")
+        for seed in range(seeds[i], seeds[i] + seeds[i+1]):  # this may get big!
+            lowest_value = min(solve_part_1(puzzle_dict, [seed]), lowest_value)
+    return lowest_value
+
+
 if __name__ == "__main__":
     with open('d05.input', 'r', encoding='UTF-8') as f:
         puzzle: list[str] = f.read().splitlines()
 
     puzzle_dict: dict = parse_puzzle_input(puzzle)
-    print(f"[Part 1] The lowest location number is {solve_part_1(puzzle_dict=puzzle_dict)}")
+    seeds: list[int] = puzzle_dict['seeds']
+    print(f"[Part 1] The lowest location number is {solve_part_1(puzzle_dict=puzzle_dict,
+                                                                 seeds=seeds)}")
+    print(f"[Part 2] The lowest location number is {solve_part_2(puzzle_dict=puzzle_dict,
+                                                                 seeds=seeds)}")

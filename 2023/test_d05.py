@@ -6,6 +6,7 @@ from d05 import (
     solve_part_1,
 )
 from pytest import fixture
+import sys
 
 EXAMPLE_1_PUZZLE = """seeds: 79 14 55 13
 
@@ -85,7 +86,31 @@ def test_parse_puzzle(example_puzzle):
 
 
 def test_solve_part_1(example_puzzle):
+    """Test the real part 1 solver"""
     puzzle_map: dict = parse_puzzle_input(example_puzzle)
     seeds: list[int] = puzzle_map['seeds']
     best_location: int = solve_part_1(puzzle_map, seeds)
     assert best_location == 35
+
+
+def test_seed_ranges(example_puzzle):
+    """Just test that the part 2 seed ranges
+       are split properly
+    """
+    puzzle_map: dict = parse_puzzle_input(example_puzzle)
+    seeds: list[int] = puzzle_map['seeds']  # just the plain list
+    assert len(seeds) == 4
+
+
+def test_solve_with_ranges(example_puzzle):
+    """Solve the example in the Part 2 way"""
+    puzzle_map: dict = parse_puzzle_input(example_puzzle)
+    seeds: list[int] = puzzle_map['seeds']  # just the plain list
+    lowest_value: int = sys.maxsize
+    for i in range(0, len(seeds), 2):  # first of each pair
+        for seed in range(seeds[i], seeds[i] + seeds[i+1]):
+            value: int = solve_part_1(puzzle_map, [seed])
+            print(f"{seed=} {value=}")
+            lowest_value = min(value, lowest_value)
+
+    assert lowest_value == 46
