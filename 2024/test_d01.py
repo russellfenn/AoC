@@ -3,8 +3,11 @@ from d01 import (
     parse_puzzle_input,
     compute_distances,
     solve_part_1,
+    similarity_score,
+    solve_part_2,
 )
 from pytest import fixture
+
 
 part_1_example = """3   4
 4   3
@@ -37,5 +40,20 @@ def test_part_1(part_1_puzzle):
     left: Locations
     right: Locations
     left, right = part_1_puzzle
-    
+
     assert solve_part_1(left, right) == 11
+
+
+def test_similarities(part_1_puzzle):
+    left: Locations
+    right: Locations
+    left, right = part_1_puzzle
+    similarities: list[int] = similarity_score(left, right)
+    assert similarities == [9, 4, 0, 0, 9, 9]
+
+
+def test_solve_part_2(part_1_puzzle):
+    left: Locations
+    right: Locations
+    left, right = part_1_puzzle
+    assert solve_part_2(left, right) == 31
