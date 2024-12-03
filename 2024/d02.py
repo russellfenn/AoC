@@ -56,7 +56,38 @@ def solve_part_1(reports: list[Report]) -> int:
     return sum(safety_report)  # when summed, True counts as 1
 
 
+def problem_dampener(report: Report) -> Report | None:
+    """Tries to remove 'problem' listings from a single Report.
+       If the report cannot be made safe, returns None.
+
+       Try to make reports safe by removing one element at a time.
+    """
+    # if already safe, do nothing
+    if is_part_1_safe(report):
+        return report
+    for i in range(len(report)):
+        test_report: Report = report.copy()
+        del test_report[i]
+        if is_part_1_safe(test_report):
+            return test_report
+    return None
+
+
+def solve_part_2(reports: list[Report]) -> int:
+    """Count how many reports are 'safe' after running
+       them through the Problem Dampener
+    """
+    safety_report: list[bool] = []
+    for r in reports:
+        if problem_dampener(r):
+            safety_report.append(True)  # we could remove a value to make it safe
+        else:
+            safety_report.append(False)
+    return sum(safety_report)  # when summed, True counts as 1
+
+
 if __name__ == "__main__":
     with open("d02.input", "r", encoding="UTF-8") as f:
-        reports: list[Report] = parse_puzzle_input(f.read().splitlines())
-    print(f"[Part 1] There are {solve_part_1(reports)} safe reports.")
+        reports_in: list[Report] = parse_puzzle_input(f.read().splitlines())
+    print(f"[Part 1] There are {solve_part_1(reports_in)} safe reports.")
+    print(f"[Part 2] Using the Problem Dampener, there are now {solve_part_2(reports_in)} safe reports.")
