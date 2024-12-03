@@ -28,10 +28,12 @@ def test_puzzle_input(part_1_puzzle: list[Report]):
 
 
 def test_part_1(part_1_puzzle: list[Report]):
+    # first test making Deltas
     deltas: list[Deltas] = [calc_deltas(r) for r in part_1_puzzle]
     assert len(deltas[0]) == len(part_1_puzzle[0]) - 1
     assert deltas[0] == [-1, -2, -2, -1]
-    safety: list[bool] = [is_part_1_safe(d) for d in deltas]
+    # Now we switch to using Reports
+    safety: list[bool] = [is_part_1_safe(r) for r in part_1_puzzle]
     assert safety == [True, False, False, False, False, True]
 
 

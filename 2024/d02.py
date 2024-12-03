@@ -27,14 +27,15 @@ def parse_puzzle_input(puzzle_str: list[str]) -> list[Report]:
     return puzzle
 
 
-def calc_deltas(report: Report) -> list[int]:
+def calc_deltas(report: Report) -> Deltas:
     """Find the delta from each element in the list"""
     return [e[1] - report[e[0]] for e in enumerate(report[1:])]
 
 
-def is_part_1_safe(deltas: Report) -> bool:
-    """Is the list of Deltas safe according to Part 1 rules?
+def is_part_1_safe(report: Report) -> bool:
+    """Are the Levels in this Report safe according to Part 1 rules?
     """
+    deltas: Deltas = calc_deltas(report)
     safe_values: list[int] = [-3, -2, -1, 1, 2, 3]
     # Ensure every value in the safe range
     if not all([d in safe_values for d in deltas]):
@@ -51,8 +52,7 @@ def is_part_1_safe(deltas: Report) -> bool:
 
 def solve_part_1(reports: list[Report]) -> int:
     """Count how many reports are 'safe'"""
-    deltas: list[Deltas] = [calc_deltas(r) for r in reports]
-    safety_report: list[bool] = [is_part_1_safe(d) for d in deltas]
+    safety_report: list[bool] = [is_part_1_safe(r) for r in reports]
     return sum(safety_report)  # when summed, True counts as 1
 
 
