@@ -1,0 +1,62 @@
+"""
+Day 02 - Red-Nosed Reports
+
+Part 1 puzzle input is a list of Reports, where each report is a 
+series of Levels (integers).
+
+Levels are "safe" if they
+- either ALL increase or ALL decrease
+
+  - find the difference between successive levels -> either all positive or negative
+
+- successive levels differ by 1, 2, or 3
+
+  - Any 0 makes it unsafe
+  - Any >= 4 is unsafe
+"""
+type Report = list[int]
+type Deltas = list[int]  # length will be one less than Report
+
+
+def parse_puzzle_input(puzzle_str: list[str]) -> list[Report]:
+    """Read the puzzle input as a list of strings"""
+    puzzle: list[Report] = []
+    for line in puzzle_str:
+        report: Report = [int(l) for l in line.split()]
+        puzzle.append(report)
+    return puzzle
+
+
+def calc_deltas(report: Report) -> list[int]:
+    """Find the delta from each element in the list"""
+    return [e[1] - report[e[0]] for e in enumerate(report[1:])]
+
+
+def is_part_1_safe(deltas: Report) -> bool:
+    """Is the list of Deltas safe according to Part 1 rules?
+    """
+    safe_values: list[int] = [-3, -2, -1, 1, 2, 3]
+    # Ensure every value in the safe range
+    if not all([d in safe_values for d in deltas]):
+        return False
+    # Ensure all increasing
+    if deltas[0] > 0:
+        if not all([d > 0 for d in deltas]):
+            return False
+    else:
+        if not all([d < 0 for d in deltas]):
+            return False
+    return True
+
+
+def solve_part_1(reports: list[Report]) -> int:
+    """Count how many reports are 'safe'"""
+    deltas: list[Deltas] = [calc_deltas(r) for r in reports]
+    safety_report: list[bool] = [is_part_1_safe(d) for d in deltas]
+    return sum(safety_report)  # when summed, True counts as 1
+
+
+if __name__ == "__main__":
+    with open("d02.input", "r", encoding="UTF-8") as f:
+        reports: list[Report] = parse_puzzle_input(f.read().splitlines())
+    print(f"[Part 1] There are {solve_part_1(reports)} safe reports.")
