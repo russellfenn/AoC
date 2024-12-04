@@ -15,6 +15,20 @@ I also see at the end there are two `mul` instructions inside ().
 
 Also note that the puzzle input is 6 very long lines. I don't know yet if the
 line breaks are significant.
+
+Part 2 tells us to look at the `do()` and `don't()` instructions, which tells us
+to enable or disable the `mul` instructions.
+
+If we use a regex to split AND capture the `do()` and `don't()` instructions,
+we end up with a list of fragments that also contain the `do()` and `don't()`.
+With this, we can iterate over the list to enable only the right fragments.
+The enabled fragments can be parsed with the part_1 parser.
+
+I kept getting part 2 wrong (my number was too high). I finally realized
+that the line breaks ARE NOT significant, and the do/don't enable/disable
+carries over from one line to the next (I had been enabling it at the start
+of each line, instead of just at the start of the puzzle). Fortunately,
+it was pretty easy to fix, and that produced the right answer.
 """
 import re
 
@@ -48,7 +62,46 @@ def solve_part_1(puzzle: Puzzle) -> int:
     return sum(sums)
 
 
+do_dont_rx = re.compile(r"(do\(\))|(don't\(\))")
+
+
+def parse_part_2_input(puzzle: list[str]) -> Puzzle:
+    """This time we first split on do() and don't()
+    """
+    instruction_list: list = []
+    enabled: bool = True  # always enabled at the start of the input
+    for line in puzzle:
+        fragments: list[str] = do_dont_rx.split(line)
+
+        for fragment in fragments:
+            if fragment is None:
+                continue
+            if enabled and "mul(" in fragment:
+                instruction_list.append(fragment)
+                # print(f"Adding {fragment=}")
+            elif fragment == "don't()":
+                enabled = False
+            elif fragment == "do()":
+                enabled = True
+            # print(f"Instructions {enabled=}")
+
+    # feed into the part_1 parser
+    return parse_part_1_input(instruction_list)
+
+
+def solve_part_2(puzzle: Puzzle) -> int:
+    """After parsing, the input is just a subset
+       of the part 1 puzzle, so we can use that solver.
+    """
+    return solve_part_1(puzzle)
+
+
+
 if __name__ == "__main__":
     with open("d03.input", "r", encoding="UTF-8") as f:
         puzzle_input: Puzzle = parse_part_1_input(f.read().splitlines())
-    print(f"[Part 1] Multiplication results: {solve_part_1(puzzle_input)}")
+    print(f"[Part 1] Multiplication results: {solve_part_1(puzzle_input):15d}")
+    # read the input again and use the other parser
+    with open("d03.input", "r", encoding="UTF-8") as f:
+        puzzle_input: Puzzle = parse_part_2_input(f.read().splitlines())
+    print(f"[Part 2] Use do/don't instructions: {solve_part_2(puzzle_input):12d}")
