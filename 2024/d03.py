@@ -96,7 +96,6 @@ def solve_part_2(puzzle: Puzzle) -> int:
     return solve_part_1(puzzle)
 
 
-
 if __name__ == "__main__":
     with open("d03.input", "r", encoding="UTF-8") as f:
         puzzle_input: Puzzle = parse_part_1_input(f.read().splitlines())
