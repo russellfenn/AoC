@@ -20,9 +20,21 @@ As I solve and get stuck on more puzzles, I see that they often follow patterns,
 
 ### Grid Puzzles
 
+Grid puzzles seem to be a recurring theme
+
+- [2024 Day 04: Ceres Search](2024/d04.py)
+- [2023 Day 03: Gear Ratios](2023/d03.py)
+- [2022 Day 08: Treetop Tree House](2022/d08.py)
 - [2021 Day 9: Smoke Basins](2021/d09.py)
 - [2020 Day 3: Toboggan Trajectory](2020/d03.py)
 
 ### State Machines
 
 - [2020 Day 8: Handheld Halting](2020/d08.py)
+
+## Table of Contents
+
+- 2024 [README](2024/README.md)
+- 2023 [README](2023/README.md)
+- 2022 [README](2022/README.md)
+- 2021 [README](2021/README.md)
